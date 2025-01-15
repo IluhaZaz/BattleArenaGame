@@ -1,20 +1,18 @@
 import heroes.Archer;
 import heroes.Hero;
-import heroes.Knight;
-import heroes.Wizard;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Field {
-    private boolean ifUpMove;
+    private boolean isUpMove;
 
     private List<Hero> upSide;
     private List<Hero> downSide;
 
     public Field(){
-        this.ifUpMove = true;
+        this.isUpMove = true;
 
         this.upSide = new ArrayList<Hero>();
         this.downSide = new ArrayList<Hero>();
@@ -56,7 +54,7 @@ public class Field {
     }
 
     protected String attack(int attackPos, int defPos){
-        if(this.ifUpMove) {
+        if(this.isUpMove) {
             return this.upSide.get(attackPos).attack(this.downSide.get(defPos));
         }
         else {
@@ -65,7 +63,7 @@ public class Field {
     }
 
     protected String useAbility(int usePos, int otherPos){
-        if(this.ifUpMove) {
+        if(this.isUpMove) {
             if (otherPos == -1) {
                 Hero[] enemies = new Hero[this.downSide.size()];
                 for(int i = 0; i < this.downSide.size(); ++i){
@@ -92,10 +90,10 @@ public class Field {
         boolean rightAlive = false;
 
         for(int i = 0; i < this.upSide.size(); ++i){
-            if(this.upSide.get(i).getHp() > 0){
+            if(!this.upSide.get(i).isDead()){
                 leftAlive = true;
             }
-            if(this.downSide.get(i).getHp() > 0){
+            if(!this.downSide.get(i).isDead()){
                 rightAlive = true;
             }
         }
@@ -114,7 +112,7 @@ public class Field {
 
         this.showField();
         while(res.equals("GameNotEnded")){
-            if(this.ifUpMove){
+            if(this.isUpMove){
                 System.out.println("Now up player's turn");
             }
             else {
@@ -135,7 +133,7 @@ public class Field {
                     resMove = this.attack(lPos, rPos);
                 }
                 else {
-                    if(this.ifUpMove){
+                    if(this.isUpMove){
                         if(Archer.class == this.upSide.get(lPos).getClass()){
                             resMove = this.useAbility(lPos, -1);
                         }
@@ -161,7 +159,18 @@ public class Field {
                 System.out.println((resMove));
             }while (!resMove.isEmpty());
 
-            this.ifUpMove = !this.ifUpMove;
+            if(this.isUpMove) {
+                for (Hero h : this.upSide) {
+                    h.tryMakeDead();
+                }
+            }
+            else {
+                for (Hero h : this.downSide) {
+                    h.tryMakeDead();
+                }
+            }
+
+            this.isUpMove = !this.isUpMove;
             res = this.isGameEnded();
             this.showField();
         }

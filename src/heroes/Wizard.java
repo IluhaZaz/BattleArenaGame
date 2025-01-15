@@ -8,16 +8,21 @@ public class Wizard extends Hero{
         this.armour = 0;
         this.magic_armour = 3;
 
+        this.loadSprite();
+    }
+
+    @Override
+    protected void loadSprite() {
         String spritePath = "src\\sprites\\wizard.txt";
         this.sprite = txtFileHandler.readFile(spritePath);
     }
 
     @Override
     public String attack(Hero enemy){
-        if(this.hp <= 0){
+        if(this.isDead){
             return "This wizard's dead";
         }
-        if(enemy.hp <= 0){
+        if(enemy.isDead){
             return "This enemy's already dead";
         }
         enemy.hp -= (5 - enemy.magic_armour);
@@ -26,10 +31,10 @@ public class Wizard extends Hero{
 
     @Override
     public String ability(Hero... heroes) {
-        if(this.hp <= 0){
+        if(this.isDead){
             return "This wizard's dead";
         }
-        heroes[0].hp += 4;
+        heroes[0].reanimate(4);
         return "";
     }
 }

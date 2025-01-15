@@ -7,7 +7,7 @@ class Main {
         Field f = new Field();
         f.addHero(new Knight(), true);
         f.addHero(new Archer(), true);
-        f.addHero(new Knight(), false);
+        f.addHero(new Wizard(), false);
         f.addHero(new Wizard(), false);
 
         f.startGame();

@@ -9,16 +9,21 @@ public class Archer extends Hero{
         this.armour = 1;
         this.magic_armour = 1;
 
+        this.loadSprite();
+    }
+
+    @Override
+    protected void loadSprite() {
         String spritePath = "src\\sprites\\archer.txt";
         this.sprite = txtFileHandler.readFile(spritePath);
     }
 
     @Override
     public String attack(Hero enemy){
-        if(this.hp <= 0){
+        if(this.isDead){
             return "This archer's dead";
         }
-        if(enemy.hp <= 0){
+        if(enemy.isDead){
             return "This enemy's already dead";
         }
         enemy.hp -= (5 - enemy.armour);
@@ -27,7 +32,7 @@ public class Archer extends Hero{
 
     @Override
     public String ability(Hero... heroes) {
-        if(this.hp <= 0){
+        if(this.isDead){
             return "This archer's dead";
         }
         for(Hero enemy: heroes){
