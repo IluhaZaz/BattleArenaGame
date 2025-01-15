@@ -1,17 +1,20 @@
+import heroes.Archer;
 import heroes.Hero;
+import heroes.Knight;
+import heroes.Wizard;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Field {
-    private boolean ifLeftMove;
+    private boolean ifUpMove;
 
     private List<Hero> upSide;
     private List<Hero> downSide;
 
     public Field(){
-        this.ifLeftMove = true;
+        this.ifUpMove = true;
 
         this.upSide = new ArrayList<Hero>();
         this.downSide = new ArrayList<Hero>();
@@ -29,35 +32,58 @@ public class Field {
     public void showField(){
         for(int i = 0; i < this.upSide.getFirst().sprite.size(); ++i) {
             String line = "";
-            for (int j = 0; j < this.upSide.size(); ++j) {
-                line = line.concat(this.upSide.get(j).sprite.get(i));
+            for (Hero hero : this.upSide) {
+                line = line.concat(hero.sprite.get(i));
             }
             System.out.println(line);
         }
         for(Hero hero: this.upSide){
-            System.out.print(hero.getHp() + "\t\t");
+            System.out.print(hero.getHp() + "\t\t\t\t ");
         }
         System.out.print("\n");
 
         for(int i = 0; i < this.downSide.getFirst().sprite.size(); ++i){
             String line = "";
-            for (int j = 0; j < this.downSide.size(); ++j) {
-                line = line.concat(this.downSide.get(j).sprite.get(i));
+            for (Hero hero : this.downSide) {
+                line = line.concat(hero.sprite.get(i));
             }
             System.out.println(line);
         }
         for(Hero hero: this.downSide){
-            System.out.print(hero.getHp() + "\t\t");
+            System.out.print(hero.getHp() + "\t\t\t\t ");
         }
         System.out.print("\n");
     }
 
-    protected void makeMove(int attackPos, int defPos){
-        if(this.ifLeftMove) {
-            this.upSide.get((attackPos)).attack(this.downSide.get(defPos));
+    protected String attack(int attackPos, int defPos){
+        if(this.ifUpMove) {
+            return this.upSide.get(attackPos).attack(this.downSide.get(defPos));
         }
         else {
-            this.downSide.get((attackPos)).attack(this.upSide.get(defPos));
+            return this.downSide.get(attackPos).attack(this.upSide.get(defPos));
+        }
+    }
+
+    protected String useAbility(int usePos, int otherPos){
+        if(this.ifUpMove) {
+            if (otherPos == -1) {
+                Hero[] enemies = new Hero[this.downSide.size()];
+                for(int i = 0; i < this.downSide.size(); ++i){
+                    enemies[i] = this.downSide.get(i);
+                }
+                return this.upSide.get(usePos).ability(enemies);
+            }
+            return this.upSide.get(usePos).ability(this.upSide.get(otherPos));
+        }
+        else {
+            if (otherPos == -1) {
+                Hero[] enemies = new Hero[this.upSide.size()];
+                for(int i = 0; i < this.upSide.size(); ++i){
+                    enemies[i] = this.upSide.get(i);
+                }
+                return this.downSide.get(usePos).ability(enemies);
+            }
+            return this.downSide.get(usePos).ability(this.downSide.get(otherPos));
         }
     }
 
@@ -88,19 +114,54 @@ public class Field {
 
         this.showField();
         while(res.equals("GameNotEnded")){
-            if(this.ifLeftMove){
+            if(this.ifUpMove){
                 System.out.println("Now up player's turn");
             }
-            else{
+            else {
                 System.out.println("Now down player's turn");
             }
-            System.out.println("Choose hero to perform attack");
-            int lPos = scanner.nextInt();
-            System.out.println("Choose enemy to attack");
-            int rPos = scanner.nextInt();
-            this.makeMove(lPos, rPos);
+            String resMove;
+            do {
+                int lPos;
+                System.out.println("Choose hero to perform attack or use ability");
+                lPos = scanner.nextInt();
 
-            this.ifLeftMove = !this.ifLeftMove;
+                System.out.println("You want to attack[0] or use ability[1]?");
+                int ans = scanner.nextInt();
+                if(ans == 0) {
+                    int rPos;
+                    System.out.println("Choose enemy to attack");
+                    rPos = scanner.nextInt();
+                    resMove = this.attack(lPos, rPos);
+                }
+                else {
+                    if(this.ifUpMove){
+                        if(Archer.class == this.upSide.get(lPos).getClass()){
+                            resMove = this.useAbility(lPos, -1);
+                        }
+                        else {
+                            int rPos;
+                            System.out.println("Choose hero to use ability on");
+                            rPos = scanner.nextInt();
+                            resMove = this.useAbility(lPos, rPos);
+                        }
+                    }
+                    else{
+                        if(Archer.class == this.downSide.get(lPos).getClass()){
+                            resMove = this.useAbility(lPos, -1);
+                        }
+                        else {
+                            int rPos;
+                            System.out.println("Choose hero to use ability on");
+                            rPos = scanner.nextInt();
+                            resMove = this.useAbility(lPos, rPos);
+                        }
+                    }
+                }
+                System.out.println((resMove));
+            }while (!resMove.isEmpty());
+
+            this.ifUpMove = !this.ifUpMove;
             res = this.isGameEnded();
             this.showField();
         }

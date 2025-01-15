@@ -14,5 +14,7 @@ public abstract class Hero {
         return this.hp;
     }
 
-    public abstract boolean attack(Hero enemy);
+    public abstract String attack(Hero enemy);
+
+    public abstract String ability(Hero... heroes);
 }

@@ -14,8 +14,25 @@ public class Archer extends Hero{
     }
 
     @Override
-    public boolean attack(Hero enemy){
+    public String attack(Hero enemy){
+        if(this.hp <= 0){
+            return "This archer's dead";
+        }
+        if(enemy.hp <= 0){
+            return "This enemy's already dead";
+        }
         enemy.hp -= (5 - enemy.armour);
-        return enemy.hp <= 0;
+        return "";
+    }
+
+    @Override
+    public String ability(Hero... heroes) {
+        if(this.hp <= 0){
+            return "This archer's dead";
+        }
+        for(Hero enemy: heroes){
+            enemy.hp -= (3 - enemy.armour);
+        }
+        return "";
     }
 }
