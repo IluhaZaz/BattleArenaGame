@@ -23,6 +23,12 @@ public abstract class Hero {
         return this.isDead;
     }
 
+    public void waitCooldown(){
+        if(this.cooldown != 0) {
+            --this.cooldown;
+        }
+    }
+
     public void reanimate(int hp){
         this.hp += hp;
         if(this.hp > 0){

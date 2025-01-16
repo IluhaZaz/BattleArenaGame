@@ -35,9 +35,15 @@ public class Archer extends Hero{
         if(this.isDead){
             return "This archer's dead";
         }
+        if(this.cooldown != 0){
+            return String.format("This archer's ability will be available in %d moves",
+                    this.cooldown);
+        }
         for(Hero enemy: heroes){
             enemy.hp -= (3 - enemy.armour);
         }
+
+        this.cooldown += 2;
         return "";
     }
 }

@@ -106,6 +106,20 @@ public class Field {
         return "Down player won";
     }
 
+    public void refreshHeroes(){
+        List<Hero> toRefresh;
+        if(this.isUpMove) {
+            toRefresh = this.upSide;
+        }
+        else {
+            toRefresh = this.downSide;
+        }
+        for (Hero h : toRefresh) {
+            h.tryMakeDead();
+            h.waitCooldown();
+        }
+    }
+
     public void startGame(){
         Scanner scanner = new Scanner(System.in);
         String res = "GameNotEnded";
@@ -159,16 +173,7 @@ public class Field {
                 System.out.println((resMove));
             }while (!resMove.isEmpty());
 
-            if(this.isUpMove) {
-                for (Hero h : this.upSide) {
-                    h.tryMakeDead();
-                }
-            }
-            else {
-                for (Hero h : this.downSide) {
-                    h.tryMakeDead();
-                }
-            }
+            this.refreshHeroes();
 
             this.isUpMove = !this.isUpMove;
             res = this.isGameEnded();

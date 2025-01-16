@@ -34,7 +34,13 @@ public class Wizard extends Hero{
         if(this.isDead){
             return "This wizard's dead";
         }
+        if(this.cooldown != 0){
+            return String.format("This wizard's ability will be available in %d moves",
+                    this.cooldown);
+        }
         heroes[0].reanimate(4);
+
+        this.cooldown += 3;
         return "";
     }
 }
