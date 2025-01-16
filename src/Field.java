@@ -1,5 +1,6 @@
 import heroes.Archer;
 import heroes.Hero;
+import utils.safeNextInt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,9 +56,21 @@ public class Field {
 
     protected String attack(int attackPos, int defPos){
         if(this.isUpMove) {
+            if(this.upSide.size() <= attackPos || attackPos < 0){
+                return "Your hero invalid position";
+            }
+            if(this.downSide.size() <= defPos || defPos < 0){
+                return "Enemy invalid position";
+            }
             return this.upSide.get(attackPos).attack(this.downSide.get(defPos));
         }
         else {
+            if(this.downSide.size() <= attackPos || attackPos < 0){
+                return "Your hero invalid position";
+            }
+            if(this.upSide.size() <= defPos || defPos < 0){
+                return "Enemy invalid position";
+            }
             return this.downSide.get(attackPos).attack(this.upSide.get(defPos));
         }
     }
@@ -134,38 +147,81 @@ public class Field {
             }
             String resMove;
             do {
+                resMove = "RandomValue";
                 int lPos;
+
                 System.out.println("Choose hero to perform attack or use ability");
-                lPos = scanner.nextInt();
+                lPos = safeNextInt.nextInt(scanner);
+                if(lPos == -1){
+                    continue;
+                }
 
                 System.out.println("You want to attack[0] or use ability[1]?");
-                int ans = scanner.nextInt();
+                int ans = safeNextInt.nextInt(scanner);
+                if(ans == -1){
+                    continue;
+                }
+
+                if(ans != 0 && ans != 1){
+                    System.out.println("Invalid command");
+                    continue;
+                }
                 if(ans == 0) {
                     int rPos;
                     System.out.println("Choose enemy to attack");
-                    rPos = scanner.nextInt();
+                    rPos = safeNextInt.nextInt(scanner);
+                    if(rPos == -1){
+                        continue;
+                    }
+
                     resMove = this.attack(lPos, rPos);
                 }
                 else {
                     if(this.isUpMove){
+                        if(this.upSide.size() <= lPos || lPos < 0){
+                            System.out.println("Your hero invalid position");
+                            continue;
+                        }
                         if(Archer.class == this.upSide.get(lPos).getClass()){
                             resMove = this.useAbility(lPos, -1);
                         }
                         else {
                             int rPos;
                             System.out.println("Choose hero to use ability on");
-                            rPos = scanner.nextInt();
+                            rPos = safeNextInt.nextInt(scanner);
+                            if(rPos == -1){
+                                continue;
+                            };
+
+                            if(this.downSide.size() <= rPos || rPos < 0){
+                                System.out.println("Invalid position");
+                                continue;
+                            }
+
                             resMove = this.useAbility(lPos, rPos);
                         }
                     }
                     else{
+                        if(this.downSide.size() <= lPos || lPos < 0){
+                            System.out.println("Your hero invalid position");
+                            continue;
+                        }
                         if(Archer.class == this.downSide.get(lPos).getClass()){
                             resMove = this.useAbility(lPos, -1);
                         }
                         else {
                             int rPos;
                             System.out.println("Choose hero to use ability on");
-                            rPos = scanner.nextInt();
+                            rPos = safeNextInt.nextInt(scanner);
+                            if(rPos == -1){
+                                continue;
+                            };
+
+                            if(this.upSide.size() <= rPos || rPos < 0){
+                                System.out.println("Invalid position");
+                                continue;
+                            }
+
                             resMove = this.useAbility(lPos, rPos);
                         }
                     }
