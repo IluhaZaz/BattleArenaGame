@@ -12,6 +12,7 @@ class Main {
         f.addHero(new Wizard(), false);
         f.addHero(new Archer(), false);
 
+        f.downPlayerStarts();
         f.startGame();
     }
 }

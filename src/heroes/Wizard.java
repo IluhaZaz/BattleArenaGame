@@ -5,7 +5,7 @@ import utils.txtFileHandler;
 public class Wizard extends Hero{
     public Wizard() {
         this.hp = 5;
-        this.armour = 0;
+        this.armour = 1;
         this.magic_armour = 3;
 
         this.loadSprite();

@@ -19,8 +19,12 @@ public class Field {
         this.downSide = new ArrayList<Hero>();
     }
 
-    public void addHero(Hero hero, boolean isLeft){
-        if(isLeft){
+    public void downPlayerStarts(){
+        this.isUpMove = false;
+    }
+
+    public void addHero(Hero hero, boolean isUpper){
+        if(isUpper){
             this.upSide.add(hero);
         }
         else{
